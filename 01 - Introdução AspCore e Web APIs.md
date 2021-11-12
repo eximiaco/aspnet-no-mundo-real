@@ -162,6 +162,41 @@ Dentro de uma requisição HTTP/HTTPS dados podem ser enviados de diferentes for
 public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null) { ... }
 ```
 
+### Binding source parameter
+
+Para auxiliar a definir a fonte dos dados a serem mapeandos como parametros pelo componente de `model binding` podemos utilizar alguns atributos:
+
+| Attribute      | Binding source                                      |
+|----------------|-----------------------------------------------------|
+| [FromBody]     | Request body                                        |
+| [FromForm]     | Form data in the request body                       |
+| [FromHeader]   | Request header                                      |
+| [FromQuery]    | Request query string parameter                      |
+| [FromRoute]    | Route data from the current request                 |
+| [FromServices] | The request service injected as an action parameter |
+
+Por exemplo para receber um parametro via `query string` como na requisição: `Produtos/?liberado=true`, podemos o usar o seguinte código
+
+```c#
+[HttpGet]
+public ActionResult<List<Produto>> Get(
+    [FromQuery] bool liberado = false)
+{
+    List<Produto> produtos = null;
+
+    if (liberado)
+    {
+        produtos = _produtosEmMemoria.Where(p => p.EstaLiberado).ToList();
+    }
+    else
+    {
+        produtos = _produtosEmMemoria;
+    }
+
+    return produtos;
+}
+```
+
 ### Model Validation
 
 Além do motor de `binding` o `ASP.NET CORE MVC` oferece suporte a um componente de validação, que permite decorar nossos modelos (`model`) com atributos.
@@ -231,23 +266,117 @@ public class ProdutosController : Controller
 
 ## Respostas HTTP
 
+Toda requisição HTTP precessada por um servidor retorna uma mensagem de retorno com um código de status. As respostas são agrupadas em cinco classes:
 
+1) Informação (`status code 100-199`)
+2) Sucesso (`status code 200-299`)
+3) Redirecionamento (`status code 300-399`)
+4) Erros do cliente (`status code 400-499`)
+5) Erros do servidor (`status code 500-599`)
 
-## Controller Base
+Alguns exemplos de código, são os listados abaixo. Para uma visão completa podemos acessar o [documento de desenvolvimento da mozilla](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status).
 
-TODO
+- `200 OK` : Requisição foi bem sucedida
+- `201 Created` : Requisição bem sucedida e um novo recurso foi criado
+- `202 Accepted`: Requisição recebida
+- `204 No Content` : Não há conteúdo para enviar para esta solicitação
+- `400 Bad Request` : Servidor não entendedeu a requisição pois está inválida
+- `401 Unauthrized` : Cliente deve se autenticar para obter a resposta
+- `403 Forbidden` : Cliente não tem direito de acesso ao conteúdo
+- `404 Not Found` : Servidor não pode encontrar o recurso solicitado
+- `500 Internal Server Error` : Servidor encontrou uma situação com a qual não sabe lidar
 
-## Atributo ApiController 
+# Dependency Injection uma visão geral
 
-TODO
+Uma dependência é um objeto que depende de outro para executar uma operação. Considere o exemplo, abaixo
 
-## Binding source parameter
+```c#
+public class MyDependency
+{
+    public void WriteMessage(string message)
+    {
+        Console.WriteLine($"MyDependency.WriteMessage called. Message: {message}");
+    }
+}
+```
 
-TODO
+Para um classe utilziar esse nosso método, seria necessário criar um novo objeto de `MyDependency`, por exemplo:
 
-## Dependency Injection
+```c#
+public class ProductsController
+{
+    private readonly MyDependency _dependency = new MyDependency();
 
-TODO
+    [HttpGet]
+    public IActionResult Get()
+    {
+        _dependency.WriteMessage("IndexModel.OnGet");
+    }
+}
+```
+
+A classe `ProductsController` depende diretamente da classe `MyDependency`. Tal dependência pode causar problemas como:
+
+- Se for necessário trocar `MyDependency` por outra implmentação a classe `ProductsController` deve ser alterada.
+- Se `MyDependency` depender de outras classes, provavelmente deveremos configurar isso na classe `ProductsController`.
+- Essa implementação é díficil de testar.
+
+Injeção de depêndencia resolve estes problemas, através:
+
+- Usar uma interface para abastrair a implmentação concreta.
+- Registrar as dependências em um `container` que gerência a criação de objetos. O `ASP.NET CORE` possui um serviço de `container` embutido.
+- Injetar as dependências via construtor, para que o framework fique responsável em criar as instâncias de objetos.
+
+Veja o exemplo, implmentando os passos acima
+
+```c#
+public interface IMyDependency
+{
+    void WriteMessage(string message);
+}
+
+public class MyDependency : IMyDependency
+{
+    public void WriteMessage(string message)
+    {
+        Console.WriteLine($"MyDependency.WriteMessage Message: {message}");
+    }
+}
+```
+
+Uma vez com as abstrações e implementações concretas, precisamos registra-las no `container`:
+
+```c#
+using DependencyInjectionSample.Interfaces;
+using DependencyInjectionSample.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+
+builder.Services.AddScoped<IMyDependency, MyDependency>();
+
+var app = builder.Build();
+```
+Finalente, podemos injetar a dependencia via construtor:
+
+```c#
+public class ProductsController
+{
+    private readonly IMyDependency _dependency;
+
+    public ProductsController(IMyDependency myDependency)
+    {
+        _myDependency = myDependency;            
+    }
+
+    [HttpGet]
+    public IActionResult Get()
+    {
+        _dependency.WriteMessage("IndexModel.OnGet");
+    }
+}
+```
 
 # Exercícios
 

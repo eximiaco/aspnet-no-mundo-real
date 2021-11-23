@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AplicacaoEscolas.WebApi.Infraestrutura;
 
 namespace AplicacaoEscolas.WebApi
 {
@@ -26,6 +27,8 @@ namespace AplicacaoEscolas.WebApi
         {
 
             services.AddControllers();
+
+            services.AddSingleton<TurmasRepositorio>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

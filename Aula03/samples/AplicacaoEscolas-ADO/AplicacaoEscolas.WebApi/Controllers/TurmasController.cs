@@ -13,27 +13,37 @@ namespace AplicacaoEscolas.WebApi.Controllers
     [ApiController]
     public class TurmasController : ControllerBase
     {
-        private readonly TurmasRepositorio _turmasRepositorio;
+        private readonly TurmasRepositorioSqlServer _turmasRepositorioSqlServer;
 
-        public TurmasController(TurmasRepositorio turmasRepositorio)
+        public TurmasController(TurmasRepositorioSqlServer turmasRepositorioSqlServer)
         {
-            _turmasRepositorio = turmasRepositorio;
+            _turmasRepositorioSqlServer = turmasRepositorioSqlServer;
         }
 
         [HttpPost]
         public IActionResult Cadastrar([FromBody]Turma turma)
         {
             turma.Id = Guid.NewGuid();
-            _turmasRepositorio.Inserir(turma);
+            _turmasRepositorioSqlServer.Inserir(turma);
 
             return Ok(turma);
         }
 
         [HttpGet]
-        public IActionResult RecuperarTodos()
+        public IActionResult RecuperarTodos([FromQuery]string descricao)
+        {
+            return Ok(_turmasRepositorioSqlServer.RecuperarTodos());
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult RecuperarPorId(string id)
         {
 
-            return Ok(_turmasRepositorio.RecuperarTodos());
+            var guid = Guid.Parse(id);
+
+            return Ok(guid);
         }
+
+
     }
 }

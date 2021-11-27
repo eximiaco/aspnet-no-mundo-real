@@ -23,7 +23,7 @@ namespace AplicacaoEscolas.WebApi.Controllers
         [HttpPost]
         public IActionResult Cadastrar([FromBody]Turma turma)
         {
-            turma.Id = Guid.NewGuid();
+            turma.Id = Guid.NewGuid().ToString();
             _turmasRepositorio.Inserir(turma);
 
             return Ok(turma);

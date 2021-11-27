@@ -8,7 +8,7 @@ namespace AplicacaoEscolas.WebApi.Models
 {
     public sealed class Turma
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         [Required]
         [MinLength(5, ErrorMessage = "Tamanho inválido")]
         public string Descricao { get; set; }

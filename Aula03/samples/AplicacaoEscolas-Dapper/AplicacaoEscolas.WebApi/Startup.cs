@@ -28,7 +28,7 @@ namespace AplicacaoEscolas.WebApi
 
             services.AddControllers();
 
-            services.AddSingleton<TurmasRepositorio>();
+            services.AddScoped<TurmasRepositorio>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

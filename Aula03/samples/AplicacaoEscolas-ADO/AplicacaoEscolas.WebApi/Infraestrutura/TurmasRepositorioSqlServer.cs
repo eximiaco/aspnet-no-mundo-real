@@ -4,18 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using AplicacaoEscolas.WebApi.Models;
 using System.Data.SqlClient;
-using Dapper;
 using Microsoft.Extensions.Configuration;
-using Dapper;
 
 namespace AplicacaoEscolas.WebApi.Infraestrutura
 {
-    public sealed class TurmasRepositorio
+    public sealed class TurmasRepositorioSqlServer 
     {
         private readonly IConfiguration _configuracao;
 
 
-        public TurmasRepositorio(IConfiguration configuracao)
+        public TurmasRepositorioSqlServer(IConfiguration configuracao)
         {
             _configuracao = configuracao;
         }
@@ -35,14 +33,24 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
         {
             using (SqlConnection connection = new SqlConnection(_configuracao.GetConnectionString("Escolas")))
             {
-                var lista = connection.Query<Turma>(@"SELECT 
-                                                                Turmas.Id, 
+                var comando = new SqlCommand(@"SELECT Turma.Id, 
                                                                 Turmas.Descricao                                                 
-                                                        FROM Turmas
-                                                        JOIN TurmasAgenda");
-
-
-                return lista;
+                                                        FROM Turmas"
+                    , connection);
+                connection.Open();
+                var reader = comando.ExecuteReader();
+                var listaTurmas = new List<Turma>();
+                while (reader.Read())
+                {
+                    
+                    listaTurmas.Add(
+                        new Turma()
+                    {
+                        Id = Guid.Parse(reader.GetString(0)),
+                        Descricao = reader.GetString(1)
+                    });
+                }
+                return listaTurmas;
             }
         }
     }

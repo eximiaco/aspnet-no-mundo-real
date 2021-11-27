@@ -18,4 +18,5 @@ Conceitos chaves para trabalhar com ORMs
 #### [Dapper (Micro ORM)](orm-dapper.md)
 Utilizando Dapper como acesso a dados.
 
-#### EF (Entity Framework)
+#### [EF Core (Entity Framework)](orm-efcore.md)
+Trabalhando domínios ricos com `EF Core`

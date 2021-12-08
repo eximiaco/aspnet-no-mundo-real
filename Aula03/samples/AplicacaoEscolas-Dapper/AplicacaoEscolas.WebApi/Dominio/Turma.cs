@@ -21,7 +21,7 @@ namespace AplicacaoEscolas.WebApi.Dominio
         public string Descricao { get; }
         public EModalidade Modalidade { get; }
         public int QuantidadeVagas { get; }
-        public IEnumerable<Agenda> Agenda => _agenda;
+        public IEnumerable<Agenda> Agenda  => _agenda;
 
         public enum EModalidade
         {

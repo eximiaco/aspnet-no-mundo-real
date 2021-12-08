@@ -28,7 +28,7 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
                     const string sqlTurma = @"INSERT INTO Turmas (Id, Descricao, Modalidade, QuantidadeVagas) VALUES (@id, @descricao, @modalidade, @quantidadeVagas)";
                     const string sqlAgenda = @"INSERT INTO TurmasAgenda (Id, IdTurma, DiaSemana, HoraInicial, HoraFinal ) VALUES (@id, @idTurma, @diaSemana, @horaInicial, @horaFinal)";
 
-                    connection.Query(
+                    connection.Execute(
                         sqlTurma,
                         param: new { id = turma.Id, descricao = turma.Descricao, modalidade = turma.Modalidade, quantidadeVagas=  turma.QuantidadeVagas},
                         transaction:transaction);
@@ -55,12 +55,13 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
             using (SqlConnection connection = new SqlConnection(_configuracao.GetConnectionString("Escolas")))
             {
                 connection.Open();
-                const string sqlAgendasParaAtualizar = @"SELECT Id FROM TurmasAgenda WHERE Id IN @ids";
-                var idsAgenda = turma.Agenda.Select(a=> a.Id).ToArray();
-                var idsExistentes = connection.Query<Guid>(sqlAgendasParaAtualizar, new {ids = idsAgenda});
                 
                 using (var transaction = connection.BeginTransaction())
                 {
+                    const string sqlAgendasParaAtualizar = @"SELECT Id FROM TurmasAgenda WHERE Id IN @ids";
+                    var idsAgenda = turma.Agenda.Select(a=> a.Id).ToArray();
+                    var idsExistentes = connection.Query<Guid>(sqlAgendasParaAtualizar, new {ids = idsAgenda});
+                    
                     const string sqlTurma = @"UPDATE Turmas SET Descricao = @Descricao, Modalidade = @Modalidade, QuantidadeVagas = @QuantidadeVagas WHERE Id = @Id";
                     const string sqlInsertAgenda = @"INSERT INTO TurmasAgenda (Id, IdTurma, DiaSemana, HoraInicial, HoraFinal ) VALUES (@Id, @IdTurma, @DiaSemana, @HoraInicial, @HoraFinal)";
                     const string sqlUpdateAgenda = @"UPDATE TurmasAgenda SET DiaSemana = @DiaSemana, HoraInicial = @HoraInicial, HoraFinal = @HoraFinal WHERE Id = @Id";
@@ -178,18 +179,18 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
                 var turmaDicionario = new Dictionary<Guid, Turma>();
                 var lista = connection.Query<TurmaDTO, AgendaDTO, Turma>(
                     sql,
-                    (turma, agenda) =>
+                    (turmaDto, agendaDto) =>
                     {
-                        if (turmaDicionario.TryGetValue(turma.Id, out var turmaExistente))
+                        if (turmaDicionario.TryGetValue(turmaDto.Id, out var turmaExistente))
                         {
-                            turmaExistente.AdicionarAgenda(agenda.DiaSemana, agenda.HoraInicial, agenda.HoraFinal);
+                            turmaExistente.AdicionarAgenda(agendaDto.DiaSemana, agendaDto.HoraInicial, agendaDto.HoraFinal);
                             return turmaExistente;
                         }
                         else
                         {
-                            var novaTurma = new Turma(turma.Id, turma.Descricao, turma.Modalidade, turma.QuantidadeVagas, new List<Agenda>());
-                            novaTurma.AdicionarAgenda(agenda.DiaSemana, agenda.HoraInicial, agenda.HoraFinal);
-                            turmaDicionario.Add(turma.Id, novaTurma);
+                            var novaTurma = new Turma(turmaDto.Id, turmaDto.Descricao, turmaDto.Modalidade, turmaDto.QuantidadeVagas, new List<Agenda>());
+                            novaTurma.AdicionarAgenda(agendaDto.DiaSemana, agendaDto.HoraInicial, agendaDto.HoraFinal);
+                            turmaDicionario.Add(turmaDto.Id, novaTurma);
                             return novaTurma;
                         }
                     },

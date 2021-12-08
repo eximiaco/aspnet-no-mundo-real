@@ -25,7 +25,10 @@ namespace AplicacaoEscolas.WebApi.Controllers
         [HttpPost]
         public IActionResult Cadastrar([FromBody]NovaTurmaInputModel turmaInputModel)
         {
-            var turma = Turma.Criar(turmaInputModel.Descricao, turmaInputModel.Modalidade, turmaInputModel.QuantidadeVagas);
+            var turma = Turma.Criar(
+                turmaInputModel.Descricao, 
+                turmaInputModel.Modalidade, 
+                turmaInputModel.QuantidadeVagas);
             if(turma.IsFailure)
                 return BadRequest(turma.Error);
             foreach (var agendaInput in turmaInputModel.Agenda)

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AplicacaoEscolas.WebApi.Hosting.Extensions;
 using AplicacaoEscolas.WebApi.Infraestrutura;
+using Microsoft.EntityFrameworkCore;
 
 namespace AplicacaoEscolas.WebApi
 {
@@ -28,7 +29,13 @@ namespace AplicacaoEscolas.WebApi
         {
             services.AddControllers();
             services.AddScoped<TurmasRepositorio>();
+            services.AddScoped<AlunosRepositorio>();
             services.AddDapper();
+            services.AddDbContext<EscolasDbContext>(
+                o =>
+                {
+                    o.UseSqlServer("name=ConnectionStrings:Escolas");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

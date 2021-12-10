@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using AplicacaoEscolas.WebApi.Dominio;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -10,44 +12,19 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
 {
     public sealed class TurmasRepositorio
     {
+        private readonly EscolasDbContext _escolasDbContext;
         private readonly IConfiguration _configuracao;
 
 
-        public TurmasRepositorio(IConfiguration configuracao)
+        public TurmasRepositorio(EscolasDbContext escolasDbContext, IConfiguration configuracao)
         {
+            _escolasDbContext = escolasDbContext;
             _configuracao = configuracao;
         }
 
-        public void Inserir(Turma turma)
+        public async Task InserirAsync(Turma turma, CancellationToken cancellationToken = default)
         {
-            using (SqlConnection connection = new SqlConnection(_configuracao.GetConnectionString("Escolas")))
-            {
-                connection.Open();
-                using (var transaction = connection.BeginTransaction())
-                {
-                    const string sqlTurma = @"INSERT INTO Turmas (Id, Descricao, Modalidade, QuantidadeVagas) VALUES (@id, @descricao, @modalidade, @quantidadeVagas)";
-                    const string sqlAgenda = @"INSERT INTO TurmasAgenda (Id, IdTurma, DiaSemana, HoraInicial, HoraFinal ) VALUES (@id, @idTurma, @diaSemana, @horaInicial, @horaFinal)";
-
-                    connection.Query(
-                        sqlTurma,
-                        param: new { id = turma.Id, descricao = turma.Descricao, modalidade = turma.Modalidade, quantidadeVagas=  turma.QuantidadeVagas},
-                        transaction:transaction);
-                    
-                    var agendas =
-                    connection.Execute(
-                        sqlAgenda,
-                        param: turma.Agenda.Select(a=> new
-                        {
-                            id= Guid.NewGuid(),
-                            idTurma = turma.Id,
-                            diaSemana = a.DiaSemana,
-                            horaInicial = a.HoraInicial,
-                            horaFinal =a.HoraFinal
-                        }),
-                        transaction:transaction);
-                    transaction.Commit();
-                }
-            }
+            await _escolasDbContext.AddAsync(turma, cancellationToken);
         }
 
         public void Alterar(Turma turma)

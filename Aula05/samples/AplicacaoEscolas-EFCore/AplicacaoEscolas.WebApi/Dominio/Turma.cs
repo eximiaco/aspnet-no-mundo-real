@@ -8,6 +8,8 @@ namespace AplicacaoEscolas.WebApi.Dominio
     {
         private IList<Agenda> _agenda;
         
+        private Turma(){}
+        
         public Turma(Guid id, string descricao, EModalidade modalidade,  int quantidadeVagas, List<Agenda> agenda)
         {
             Id = id;

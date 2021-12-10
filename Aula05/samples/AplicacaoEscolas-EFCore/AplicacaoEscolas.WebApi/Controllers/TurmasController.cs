@@ -40,7 +40,7 @@ namespace AplicacaoEscolas.WebApi.Controllers
                 turma.Value.AdicionarAgenda((EDiaSemana)agendaInput.DiaSemana, horaInicial.Value, horaFinal.Value);
             }
             await _turmasRepositorio.InserirAsync(turma.Value, cancellationToken);
-
+            await _turmasRepositorio.CommitAsync(cancellationToken);
             return CreatedAtAction(nameof(RecuperarPorId), new { id = turma.Value.Id }, turma.Value.Id);
         }
 

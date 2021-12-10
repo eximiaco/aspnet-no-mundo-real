@@ -175,5 +175,10 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
                 return lista.FirstOrDefault();
             }
         }
+        
+        public async Task CommitAsync(CancellationToken cancellationToken = default)
+        {
+            await _escolasDbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

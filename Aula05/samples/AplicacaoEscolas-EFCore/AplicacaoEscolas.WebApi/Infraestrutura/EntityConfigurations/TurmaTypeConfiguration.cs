@@ -1,3 +1,4 @@
+using System;
 using AplicacaoEscolas.WebApi.Dominio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -16,6 +17,17 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura.EntityConfigurations
                 .HasConversion(new EnumToStringConverter<Turma.EModalidade>());
             builder.Property(c => c.QuantidadeVagas);
             
+            builder
+                .HasMany(c => c.Agenda)
+                .WithOne()
+                .HasForeignKey("AgendaId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .Metadata
+                .PrincipalToDependent
+                .SetField("_agenda");
+            
+            builder.Property<DateTime>("DataUltimaAlteracao");
+            builder.Property<DateTime>("DataCadastro");
             
         }
     }

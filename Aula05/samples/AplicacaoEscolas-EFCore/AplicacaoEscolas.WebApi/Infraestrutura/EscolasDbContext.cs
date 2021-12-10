@@ -28,7 +28,7 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
                         && item.Properties.Any(c => c.Metadata.Name == "DataUltimaAlteracao"))
                         item.Property("DataUltimaAlteracao").CurrentValue = DateTime.UtcNow;
 
-                    if (item.State == Microsoft.EntityFrameworkCore.EntityState.Added 
+                    if (item.State == EntityState.Added 
                         && item.Properties.Any(c => c.Metadata.Name == "DataCadastro"))
                             item.Property("DataCadastro").CurrentValue = DateTime.UtcNow;
                 }
@@ -47,6 +47,8 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new AlunoTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new TurmaTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AgendaTypeConfiguration());
         }
     }
 }

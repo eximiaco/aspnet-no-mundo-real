@@ -36,7 +36,7 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura.EntityConfigurations
                 endereco.Property(c => c.Pais)
                     .HasColumnName("EnderecoResidencialPais").HasColumnType("varchar(40)");
             });
-            builder.Property<DateTime>("DataUltimaAlterecao");
+            builder.Property<DateTime>("DataUltimaAlteracao");
             builder.Property<DateTime>("DataCadastro");
         }
     }

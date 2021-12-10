@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using AplicacaoEscolas.WebApi.Dominio;
 using AplicacaoEscolas.WebApi.Infraestrutura;
 using AplicacaoEscolas.WebApi.Models;
@@ -18,7 +20,7 @@ namespace AplicacaoEscolas.WebApi.Controllers
         }
         
         [HttpPost]
-        public IActionResult Incluir([FromBody] NovoAlunoInputModel inputModel)
+        public async Task<IActionResult> IncluirAsync([FromBody] NovoAlunoInputModel inputModel, CancellationToken cancellationToken)
         {
             var aluno = Aluno.Criar(inputModel.Nome, inputModel.DataNascimento, (EGenero)inputModel.Genero, 
                 new EnderecoCompleto(inputModel.EnderecoResidencial.Rua, inputModel.EnderecoResidencial.Numero,
@@ -27,15 +29,15 @@ namespace AplicacaoEscolas.WebApi.Controllers
                     inputModel.EnderecoResidencial.UF, inputModel.EnderecoResidencial.Pais));
             if (aluno.IsFailure)
                 return BadRequest(aluno.Error);
-            _alunosRepositorio.Inserir(aluno.Value);
-            _alunosRepositorio.Commit();
+            await _alunosRepositorio.InserirAsync(aluno.Value, cancellationToken);
+            await _alunosRepositorio.CommitAsync(cancellationToken);
             return CreatedAtAction(nameof(RecuperarPorId), new { id = aluno.Value.Id }, aluno.Value.Id);
         }
 
         [HttpGet("{id}")]
-        public IActionResult RecuperarPorId(Guid id)
+        public async Task<IActionResult> RecuperarPorId(Guid id, CancellationToken cancellationToken)
         {
-            return Ok(_alunosRepositorio.RecuperarPorId(id));
+            return Ok( await _alunosRepositorio.RecuperarPorIdAsync(id, cancellationToken));
         }
         
     }

@@ -5,7 +5,9 @@ namespace AplicacaoEscolas.WebApi.Dominio
 {
     public sealed class Aluno
     {
-        public Aluno(Guid id, string nome, DateTime dataNascimento, EGenero genero, 
+        private Aluno() { }
+        
+        private Aluno(Guid id, string nome, DateTime dataNascimento, EGenero genero, 
             EnderecoCompleto enderecoResidencial, EnderecoCompleto enderecoCobranca)
         {
             Id = id;

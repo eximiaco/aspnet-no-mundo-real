@@ -1,4 +1,5 @@
 using AplicacaoEscolas.WebApi.Dominio;
+using AplicacaoEscolas.WebApi.Infraestrutura.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace AplicacaoEscolas.WebApi.Infraestrutura
@@ -15,14 +16,7 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Aluno>().ToTable("Alunos");
-            modelBuilder.Entity<Aluno>().HasKey(c => c.Id);
-            modelBuilder.Entity<Aluno>()
-                .Property(c => c.Nome)
-                .HasColumnName("NomeCompleto")
-                .HasColumnType("varchar(50)")
-                .IsRequired();
-            modelBuilder.Entity<Aluno>().Property(c => c.DataNascimento);
+            modelBuilder.ApplyConfiguration(new AlunoTypeConfiguration());
         }
     }
 }

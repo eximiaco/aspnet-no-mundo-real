@@ -28,6 +28,10 @@ namespace AplicacaoEscolas.WebApi.Migrations
                     b.Property<DateTime>("DataNascimento")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("EmailParticular");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("varchar(50)")

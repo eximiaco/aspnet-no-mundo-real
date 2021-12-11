@@ -25,17 +25,75 @@ namespace AplicacaoEscolas.WebApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("DataCadastro")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DataNascimento")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Nome")
+                    b.Property<DateTime>("DataUltimaAlteracao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Genero")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("NomeCompleto");
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Alunos");
+                    b.ToTable("Alunos", "Matriculas");
+                });
+
+            modelBuilder.Entity("AplicacaoEscolas.WebApi.Dominio.Aluno", b =>
+                {
+                    b.OwnsOne("AplicacaoEscolas.WebApi.Dominio.EnderecoCompleto", "EnderecoResidencial", b1 =>
+                        {
+                            b1.Property<Guid>("AlunoId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Bairro")
+                                .HasColumnType("varchar(60)")
+                                .HasColumnName("EnderecoResidencialBairro");
+
+                            b1.Property<string>("Cep")
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("EnderecoResidencialCep");
+
+                            b1.Property<string>("Cidade")
+                                .HasColumnType("varchar(100)")
+                                .HasColumnName("EnderecoResidencialCidade");
+
+                            b1.Property<string>("Complemento")
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("EnderecoResidencialComplemento");
+
+                            b1.Property<string>("Numero")
+                                .HasColumnType("varchar(10)")
+                                .HasColumnName("EnderecoResidencialNumero");
+
+                            b1.Property<string>("Pais")
+                                .HasColumnType("varchar(40)")
+                                .HasColumnName("EnderecoResidencialPais");
+
+                            b1.Property<string>("Rua")
+                                .HasColumnType("varchar(100)")
+                                .HasColumnName("EnderecoResidencialRua");
+
+                            b1.Property<string>("UF")
+                                .HasColumnType("varchar(2)")
+                                .HasColumnName("EnderecoResidencialUF");
+
+                            b1.HasKey("AlunoId");
+
+                            b1.ToTable("Alunos");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AlunoId");
+                        });
+
+                    b.Navigation("EnderecoResidencial");
                 });
 #pragma warning restore 612, 618
         }

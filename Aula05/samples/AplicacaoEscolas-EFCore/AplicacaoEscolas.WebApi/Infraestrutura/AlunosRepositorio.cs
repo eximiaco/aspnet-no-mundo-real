@@ -1,6 +1,8 @@
 using System;
-using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AplicacaoEscolas.WebApi.Dominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace AplicacaoEscolas.WebApi.Infraestrutura
 {
@@ -13,21 +15,21 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
             _dbContext = dbContext;
         }
 
-        public void Inserir(Aluno novoAluno)
+        public async Task InserirAsync(Aluno novoAluno, CancellationToken cancellationToken = default)
         {
-            _dbContext.Alunos.Add(novoAluno);
+            await _dbContext.Alunos.AddAsync(novoAluno, cancellationToken);
         }
 
-        public Aluno RecuperarPorId(Guid id)
+        public async Task<Aluno> RecuperarPorIdAsync(Guid id,  CancellationToken cancellationToken = default)
         {
-            return _dbContext
-                .Alunos
-                .FirstOrDefault(c => c.Id == id);
+            return await _dbContext
+                            .Alunos
+                            .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         }
 
-        public void Commit()
+        public async Task CommitAsync(CancellationToken cancellationToken = default)
         {
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

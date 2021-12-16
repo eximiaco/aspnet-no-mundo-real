@@ -4,48 +4,22 @@ using AplicacaoEscolas.WebApi.Infraestrutura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AplicacaoEscolas.WebApi.Migrations
 {
     [DbContext(typeof(EscolasDbContext))]
-    partial class EscolasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211210225536_aluno-versao-2")]
+    partial class alunoversao2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("AplicacaoEscolas.WebApi.Dominio.Agenda", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AgendaId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DiaSemana")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("HoraFinal")
-                        .IsRequired()
-                        .HasColumnType("varchar(5)");
-
-                    b.Property<string>("HoraInicial")
-                        .IsRequired()
-                        .HasColumnType("varchar(5)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AgendaId");
-
-                    b.ToTable("TurmasAgenda", "Matriculas");
-                });
 
             modelBuilder.Entity("AplicacaoEscolas.WebApi.Dominio.Aluno", b =>
                 {
@@ -59,7 +33,7 @@ namespace AplicacaoEscolas.WebApi.Migrations
                     b.Property<DateTime>("DataNascimento")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DataUltimaAlteracao")
+                    b.Property<DateTime>("DataUltimaAlterecao")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Genero")
@@ -72,42 +46,6 @@ namespace AplicacaoEscolas.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Alunos", "Matriculas");
-                });
-
-            modelBuilder.Entity("AplicacaoEscolas.WebApi.Dominio.Turma", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataUltimaAlteracao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("Modalidade")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<int>("QuantidadeVagas")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Turmas", "Matriculas");
-                });
-
-            modelBuilder.Entity("AplicacaoEscolas.WebApi.Dominio.Agenda", b =>
-                {
-                    b.HasOne("AplicacaoEscolas.WebApi.Dominio.Turma", null)
-                        .WithMany("Agenda")
-                        .HasForeignKey("AgendaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("AplicacaoEscolas.WebApi.Dominio.Aluno", b =>
@@ -158,11 +96,6 @@ namespace AplicacaoEscolas.WebApi.Migrations
                         });
 
                     b.Navigation("EnderecoResidencial");
-                });
-
-            modelBuilder.Entity("AplicacaoEscolas.WebApi.Dominio.Turma", b =>
-                {
-                    b.Navigation("Agenda");
                 });
 #pragma warning restore 612, 618
         }

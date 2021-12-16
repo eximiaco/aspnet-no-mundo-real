@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AplicacaoEscolas.WebApi.Infraestrutura;
 using AplicacaoEscolas.WebApi.Dominio;
@@ -23,7 +24,7 @@ namespace AplicacaoEscolas.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Cadastrar([FromBody]NovaTurmaInputModel turmaInputModel)
+        public async Task<IActionResult> CadastrarAsync([FromBody]NovaTurmaInputModel turmaInputModel, CancellationToken cancellationToken)
         {
             var turma = Turma.Criar(turmaInputModel.Descricao, turmaInputModel.Modalidade, turmaInputModel.QuantidadeVagas);
             if(turma.IsFailure)
@@ -38,9 +39,9 @@ namespace AplicacaoEscolas.WebApi.Controllers
                     return BadRequest(horaFinal.Error);
                 turma.Value.AdicionarAgenda((EDiaSemana)agendaInput.DiaSemana, horaInicial.Value, horaFinal.Value);
             }
-            _turmasRepositorio.Inserir(turma.Value);
-
-            return CreatedAtAction(nameof(RecuperarPorId), new { id = turma.Value.Id }, turma.Value);
+            await _turmasRepositorio.InserirAsync(turma.Value, cancellationToken);
+            await _turmasRepositorio.CommitAsync(cancellationToken);
+            return CreatedAtAction(nameof(RecuperarPorId), new { id = turma.Value.Id }, turma.Value.Id);
         }
 
         [HttpPut("{id}")]

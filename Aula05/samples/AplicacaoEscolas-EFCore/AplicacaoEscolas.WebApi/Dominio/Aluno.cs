@@ -5,10 +5,9 @@ namespace AplicacaoEscolas.WebApi.Dominio
 {
     public sealed class Aluno
     {
-        // Necessidade do EF
-        private Aluno(){}
+        private Aluno() { }
         
-        public Aluno(Guid id, string nome, DateTime dataNascimento, EGenero genero, 
+        private Aluno(Guid id, string nome, DateTime dataNascimento, EGenero genero, 
             EnderecoCompleto enderecoResidencial, EnderecoCompleto enderecoCobranca)
         {
             Id = id;

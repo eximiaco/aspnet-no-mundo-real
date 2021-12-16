@@ -4,14 +4,16 @@ using AplicacaoEscolas.WebApi.Infraestrutura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AplicacaoEscolas.WebApi.Migrations
 {
     [DbContext(typeof(EscolasDbContext))]
-    partial class EscolasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211210234045_turma-versao-1")]
+    partial class turmaversao1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,12 +81,6 @@ namespace AplicacaoEscolas.WebApi.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DataCadastro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataUltimaAlteracao")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
                         .HasColumnType("varchar(100)");

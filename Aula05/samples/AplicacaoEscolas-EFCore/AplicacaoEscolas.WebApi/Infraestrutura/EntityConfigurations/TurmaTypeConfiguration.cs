@@ -20,7 +20,7 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura.EntityConfigurations
             builder
                 .HasMany(c => c.Agenda)
                 .WithOne()
-                .HasForeignKey("AgendaId")
+                .HasForeignKey("TurmaId")
                 .OnDelete(DeleteBehavior.Cascade)
                 .Metadata
                 .PrincipalToDependent

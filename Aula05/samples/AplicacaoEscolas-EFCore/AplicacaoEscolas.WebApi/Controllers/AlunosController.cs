@@ -29,6 +29,7 @@ namespace AplicacaoEscolas.WebApi.Controllers
                     inputModel.EnderecoResidencial.UF, inputModel.EnderecoResidencial.Pais));
             if (aluno.IsFailure)
                 return BadRequest(aluno.Error);
+
             await _alunosRepositorio.InserirAsync(aluno.Value, cancellationToken);
             await _alunosRepositorio.CommitAsync(cancellationToken);
             return CreatedAtAction(nameof(RecuperarPorId), new { id = aluno.Value.Id }, aluno.Value.Id);
@@ -37,7 +38,9 @@ namespace AplicacaoEscolas.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> RecuperarPorId(Guid id, CancellationToken cancellationToken)
         {
-            return Ok( await _alunosRepositorio.RecuperarPorIdAsync(id, cancellationToken));
+            var aluno = await _alunosRepositorio.RecuperarPorIdAsync(id, cancellationToken);
+            
+            return Ok(aluno);
         }
         
     }

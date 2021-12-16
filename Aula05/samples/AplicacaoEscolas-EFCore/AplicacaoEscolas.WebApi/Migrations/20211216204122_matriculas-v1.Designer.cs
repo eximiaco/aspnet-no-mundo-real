@@ -4,14 +4,16 @@ using AplicacaoEscolas.WebApi.Infraestrutura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AplicacaoEscolas.WebApi.Migrations
 {
     [DbContext(typeof(EscolasDbContext))]
-    partial class EscolasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211216204122_matriculas-v1")]
+    partial class matriculasv1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,11 +128,6 @@ namespace AplicacaoEscolas.WebApi.Migrations
 
                     b.Property<int>("TotalInscritos")
                         .HasColumnType("int");
-
-                    b.Property<string>("_hashConcorrencia")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("token_concorrencia");
 
                     b.HasKey("Id");
 

@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AplicacaoEscolas.WebApi.Infraestrutura;
 using AplicacaoEscolas.WebApi.Dominio;
 using AplicacaoEscolas.WebApi.Models;
-using Dapper;
 
 namespace AplicacaoEscolas.WebApi.Controllers
 {
@@ -41,18 +38,29 @@ namespace AplicacaoEscolas.WebApi.Controllers
             }
             await _turmasRepositorio.InserirAsync(turma.Value, cancellationToken);
             await _turmasRepositorio.CommitAsync(cancellationToken);
-            return CreatedAtAction(nameof(RecuperarPorId), new { id = turma.Value.Id }, turma.Value.Id);
+            return CreatedAtAction("RecuperarPorId", new { id = turma.Value.Id }, turma.Value.Id);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Atualizar(string id, [FromBody]AlterarTurmaInputModel turmaInputModel)
+        public async Task<IActionResult> Atualizar(string id, [FromBody]AlterarTurmaInputModel turmaInputModel, CancellationToken cancellationToken)
         {
             if (!Guid.TryParse(id, out var guid))
                 return BadRequest("Id inválido");
-            var turma = _turmasRepositorio.RecuperarPorId(guid);
+            var turma = await _turmasRepositorio.RecuperarPorIdAsync(guid, cancellationToken);
             if (turma == null)
                 return NotFound();
-            turma.LimparAgendas();
+
+            var agendasExistentes =
+                turma.Agenda
+                    .Where(c => turmaInputModel.Agenda.Any(input => input.Id == c.Id.ToString()))
+                    .Select(c=> c.Id);
+
+            var agendasParaExcluir = turma.Agenda
+                .Where(c => agendasExistentes.Any(id => id != c.Id))
+                .Select(c=> c.Id);
+
+            turma.RemoverAgendas(agendasParaExcluir);
+            
             foreach (var agendaInput in turmaInputModel.Agenda)
             {
                 var horaInicial = Horario.Criar(agendaInput.HoraInicial);
@@ -69,28 +77,22 @@ namespace AplicacaoEscolas.WebApi.Controllers
                 {
                     if (!Guid.TryParse(agendaInput.Id, out var guidAgenda))
                         return BadRequest("Id da agenda inválido");
-                    var agenda = new Agenda(guidAgenda, (EDiaSemana)agendaInput.DiaSemana, horaInicial.Value, horaFinal.Value);
-                    turma.AdicionarAgenda(agenda);
+                    turma.AtualizarAgenda(guidAgenda,  (EDiaSemana)agendaInput.DiaSemana, horaInicial.Value, horaFinal.Value);
                 }
             }
             
             _turmasRepositorio.Alterar(turma);
-
+            await _turmasRepositorio.CommitAsync(cancellationToken);
+            
             return Ok(turma);
         }
         
-        [HttpGet]
-        public IActionResult RecuperarTodos()
-        {
-            return Ok(_turmasRepositorio.RecuperarTodos());
-        }
-        
         [HttpGet("{id}")]
-        public IActionResult RecuperarPorId(string id)
+        public async Task<IActionResult> RecuperarPorIdAsync(string id, CancellationToken cancellationToken)
         {
             if (!Guid.TryParse(id, out var guid))
                 return BadRequest("Id inválido");
-            var turma = _turmasRepositorio.RecuperarPorId(guid);
+            var turma = await _turmasRepositorio.RecuperarPorIdAsync(guid, cancellationToken);
             if (turma == null)
                 return NotFound();
             return Ok(turma);

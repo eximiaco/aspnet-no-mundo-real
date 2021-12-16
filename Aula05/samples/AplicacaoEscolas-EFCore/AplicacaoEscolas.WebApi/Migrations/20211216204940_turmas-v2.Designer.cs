@@ -4,14 +4,16 @@ using AplicacaoEscolas.WebApi.Infraestrutura;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AplicacaoEscolas.WebApi.Migrations
 {
     [DbContext(typeof(EscolasDbContext))]
-    partial class EscolasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211216204940_turmas-v2")]
+    partial class turmasv2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

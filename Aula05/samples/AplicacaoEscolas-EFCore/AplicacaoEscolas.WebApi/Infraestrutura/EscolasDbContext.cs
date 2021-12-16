@@ -17,6 +17,8 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
         }
         
         public DbSet<Aluno> Alunos { get; set; }
+        public DbSet<Turma> Turmas { get; set; }
+        public DbSet<Matricula> Matriculas { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -49,6 +51,7 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
             modelBuilder.ApplyConfiguration(new AlunoTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TurmaTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AgendaTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new MatriculaTypeConfiguration());
         }
     }
 }

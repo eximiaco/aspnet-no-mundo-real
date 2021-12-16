@@ -16,7 +16,7 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura.EntityConfigurations
             builder.Property(c => c.Modalidade).HasColumnType("varchar(20)")
                 .HasConversion(new EnumToStringConverter<Turma.EModalidade>());
             builder.Property(c => c.QuantidadeVagas);
-            
+            builder.Property(c => c.TotalInscritos);
             builder
                 .HasMany(c => c.Agenda)
                 .WithOne()
@@ -25,6 +25,8 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura.EntityConfigurations
                 .Metadata
                 .PrincipalToDependent
                 .SetField("_agenda");
+            
+            builder.Property("_hashConcorrencia").HasColumnName("token_concorrencia").HasConversion<string>().IsConcurrencyToken();
             
             builder.Property<DateTime>("DataUltimaAlteracao");
             builder.Property<DateTime>("DataCadastro");

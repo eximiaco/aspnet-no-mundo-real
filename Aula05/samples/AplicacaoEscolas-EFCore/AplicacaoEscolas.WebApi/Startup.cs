@@ -24,6 +24,7 @@ namespace AplicacaoEscolas.WebApi
             services.AddControllers();
             services.AddScoped<TurmasRepositorio>();
             services.AddScoped<AlunosRepositorio>();
+            services.AddScoped<MatriculasRepositorio>();
             services.AddDapper();
             services.AddDbContext<EscolasDbContext>(
                 o =>

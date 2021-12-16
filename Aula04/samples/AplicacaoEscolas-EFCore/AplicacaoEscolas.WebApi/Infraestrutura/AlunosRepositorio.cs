@@ -16,6 +16,7 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
         public void Inserir(Aluno novoAluno)
         {
             _dbContext.Alunos.Add(novoAluno);
+            
         }
 
         public Aluno RecuperarPorId(Guid id)

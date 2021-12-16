@@ -23,6 +23,8 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura
                 .HasColumnType("varchar(50)")
                 .IsRequired();
             modelBuilder.Entity<Aluno>().Property(c => c.DataNascimento);
+            modelBuilder.Entity<Aluno>().Property(c => c.Email)
+                .HasColumnName("EmailParticular").HasColumnType("varchar(100)");
         }
     }
 }

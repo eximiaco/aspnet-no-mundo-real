@@ -9,5 +9,6 @@ namespace AplicacaoEscolas.WebApi.Models
         public string Nome { get; set; }
         [Required]
         public DateTime DataNascimento { get; set; }
+        public string Email { get; set; }
     }
 }

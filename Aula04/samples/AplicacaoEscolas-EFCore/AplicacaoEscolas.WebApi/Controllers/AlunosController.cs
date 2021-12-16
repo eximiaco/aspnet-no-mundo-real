@@ -20,7 +20,7 @@ namespace AplicacaoEscolas.WebApi.Controllers
         [HttpPost]
         public IActionResult Incluir([FromBody] NovoAlunoInputModel inputModel)
         {
-            var aluno = Aluno.Criar(inputModel.Nome, inputModel.DataNascimento);
+            var aluno = Aluno.Criar(inputModel.Nome, inputModel.DataNascimento, inputModel.Email);
             if (aluno.IsFailure)
                 return BadRequest(aluno.Error);
             _alunosRepositorio.Inserir(aluno.Value);

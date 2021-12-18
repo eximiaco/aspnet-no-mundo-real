@@ -21,7 +21,7 @@ namespace AplicacaoEscolas.WebApi
                 .WriteTo.Console()
                 .CreateBootstrapLogger();
 
-            Log.Information("Ìniciando Aplicação");
+            Log.Information("Iniciando Aplicação");
 
             try
             {

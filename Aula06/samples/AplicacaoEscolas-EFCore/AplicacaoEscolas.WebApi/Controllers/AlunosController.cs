@@ -27,6 +27,7 @@ namespace AplicacaoEscolas.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> IncluirAsync([FromBody] NovoAlunoInputModel inputModel, CancellationToken cancellationToken)
         {
+
             var aluno = Aluno.Criar(inputModel.Nome, inputModel.DataNascimento, (EGenero)inputModel.Genero, 
                 new EnderecoCompleto(inputModel.EnderecoResidencial.Rua, inputModel.EnderecoResidencial.Numero,
                     inputModel.EnderecoResidencial.Complemento, inputModel.EnderecoResidencial.Bairro,

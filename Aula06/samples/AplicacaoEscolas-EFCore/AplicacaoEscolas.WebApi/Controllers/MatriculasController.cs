@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AplicacaoEscolas.WebApi.Infraestrutura;
 using AplicacaoEscolas.WebApi.Dominio;
 using AplicacaoEscolas.WebApi.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AplicacaoEscolas.WebApi.Controllers
 {
@@ -15,20 +16,24 @@ namespace AplicacaoEscolas.WebApi.Controllers
         private readonly AlunosRepositorio _alunosRepositorio;
         private readonly TurmasRepositorio _turmasRepositorio;
         private readonly MatriculasRepositorio _matriculasRepositorio;
+        private readonly ILogger<MatriculasController> _logger;
 
         public MatriculasController(
             AlunosRepositorio alunosRepositorio,
             TurmasRepositorio turmasRepositorio,
-            MatriculasRepositorio matriculasRepositorio)
+            MatriculasRepositorio matriculasRepositorio,
+            ILogger<MatriculasController> logger)
         {
             _alunosRepositorio = alunosRepositorio;
             _turmasRepositorio = turmasRepositorio;
             _matriculasRepositorio = matriculasRepositorio;
+            _logger = logger;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CadastrarAsync([FromBody]NovaMatriculaInputModel inputModel, CancellationToken cancellationToken)
+        public async Task<IActionResult> CadastrarAsync([FromBody] NovaMatriculaInputModel inputModel, CancellationToken cancellationToken)
         {
+
             if (!Guid.TryParse(inputModel.AlunoId, out var guidAluno))
                 return BadRequest("Id de aluno inválido");
             if (!Guid.TryParse(inputModel.TurmaId, out var guidTurma))
@@ -47,13 +52,14 @@ namespace AplicacaoEscolas.WebApi.Controllers
                 return BadRequest(matricula.Error);
 
             turma.AdicionarAluno();
-            
+
             await _matriculasRepositorio.InserirAsync(matricula.Value, cancellationToken);
             await _matriculasRepositorio.CommitAsync(cancellationToken);
-            
-            return CreatedAtAction("RecuperarPorId", new { id = matricula.Value.Id }, matricula.Value.Id); 
+
+            return CreatedAtAction("RecuperarPorId", new { id = matricula.Value.Id }, matricula.Value.Id);
+
         }
-        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> RecuperarPorIdAsync(string id, CancellationToken cancellationToken)
         {

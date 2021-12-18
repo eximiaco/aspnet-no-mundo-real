@@ -48,8 +48,6 @@ namespace apis.service2
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "apis.service2 v1"));
             }
 
-            app.UseCors("default");
-            
             app.UseHttpsRedirection();
 
             app.UseRouting();

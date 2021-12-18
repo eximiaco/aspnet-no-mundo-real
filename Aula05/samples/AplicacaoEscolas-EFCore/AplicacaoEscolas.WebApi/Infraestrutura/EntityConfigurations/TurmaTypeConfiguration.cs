@@ -26,7 +26,10 @@ namespace AplicacaoEscolas.WebApi.Infraestrutura.EntityConfigurations
                 .PrincipalToDependent
                 .SetField("_agenda");
             
-            builder.Property("_hashConcorrencia").HasColumnName("token_concorrencia").HasConversion<string>().IsConcurrencyToken();
+            builder.Property("_hashConcorrencia")
+                .HasColumnName("token_concorrencia")
+                .HasConversion<string>()
+                .IsConcurrencyToken();
             
             builder.Property<DateTime>("DataUltimaAlteracao");
             builder.Property<DateTime>("DataCadastro");

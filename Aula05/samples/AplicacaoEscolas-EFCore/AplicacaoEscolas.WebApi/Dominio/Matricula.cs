@@ -25,6 +25,7 @@ namespace AplicacaoEscolas.WebApi.Dominio
         {
             if (!turma.AceitaNovasMatriculas())
                 return Result.Failure<Matricula>("Turma não aceita novas matrículas");
+            
             return new Matricula(Guid.NewGuid(), aluno.Id, turma.Id, DateTime.UtcNow, ESituacaoMatricula.Ativo);
         }
     }

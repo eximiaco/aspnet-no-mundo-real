@@ -4,3 +4,5 @@
 2) [Aula 02](Aula02/README.md)
 3) [Aula 03](Aula03/README.md)
 4) [Aula 04](Aula04/README.md)
+5) [Aula 05](Aula05/README.md)
+6) [Aula 06](Aula06/README.md)
